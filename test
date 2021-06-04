@@ -1,0 +1,38 @@
+provider "aws" {
+  access_key = var.access_key
+  secret_key = var.secret_key
+  region = "us-east-2"
+}
+
+terraform {
+  required_version = ">= 0.12"
+}
+
+module "vpc" {
+  source = "../../../../"
+
+  name = "so.ai-vpc"
+  cidr = "172.0.0.0/16"
+
+  azs             = ["us-east-2a","us-east-2b"]
+  public_subnets  = ["172.0.1.0/24", "172.0.3.0/24"]
+  private_subnets = ["172.0.2.0/24", "172.0.4.0/24"]
+
+  enable_nat_gateway = true
+  enable_vpn_gateway = false
+  single_nat_gateway = true
+  one_nat_gateway_per_az = false
+  enable_ipv6 = false
+  enable_classiclink = false
+  enable_classiclink_dns_support = false
+
+
+  tags = {
+    Terraform = "true"
+    Environment = "dev"
+
+  }
+  vpc_tags = {
+   name = "dev-so.ai-vpc"
+  }
+}
